@@ -1,0 +1,14 @@
+.elements {
+  display: flex;
+  flex-flow: row wrap;
+  padding-top: 49px;
+  gap: 20px 17px;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+@media screen and (max-width: 640px) {
+  .elements {
+    padding: 36px 19px 0px;
+  }
+}
