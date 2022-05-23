@@ -1,4 +1,4 @@
-.profile__add-button {
+.profile__place-add-button {
   cursor: pointer;
   margin-left: auto;
   width: 150px;
@@ -9,14 +9,15 @@
   color: rgb(255 255 255);
   background: url(../../../images/add-button.svg) no-repeat center center;
   transition: 0.3s;
+
 }
 
-.profile__add-button:hover{
+.profile__place-add-button:hover{
   opacity: 0.6;
 }
 
 @media screen and (max-width: 928px) {
-  .profile__add-button {
+  .profile__place-add-button {
     width: 100%;
     margin-top: 36px;
   }

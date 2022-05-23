@@ -1,0 +1,4 @@
+.element__like-button_active{
+  background: url(../../../../images/like-button_active.svg);
+  transition: 0.3s;
+}

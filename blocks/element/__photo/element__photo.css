@@ -1,3 +1,5 @@
 .element__photo{
-  object-fit: cover;
+  object-fit: fill;
+  height: 282px;
+  cursor: pointer;
 }
