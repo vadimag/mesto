@@ -84,8 +84,8 @@ let profileActivity = document.querySelector('.profile__activity');
 let profileEditOpenButton = document.querySelector('.profile__edit-button');
 let profileEditPopup = document.querySelector('#popupProfileEdit');
 let profileEditPopupForm = profileEditPopup.querySelector('.popup__form');
-let profileEditNameInput = profileEditPopupForm.querySelector('#name');
-let profileEditActivityInput = profileEditPopupForm.querySelector('#activity');
+let profileEditNameInput = profileEditPopupForm.querySelector('#popupProfile-name');
+let profileEditActivityInput = profileEditPopupForm.querySelector('#popupProfile-activity');
 let profileEditSubmitButton = profileEditPopupForm.querySelector('.popup__save-button');
 let profileEditCloseButton = profileEditPopup.querySelector('.popup__close-button');
 
@@ -111,8 +111,8 @@ profileEditCloseButton.addEventListener('click', () => profileEditPopup.classLis
 let placeAddOpenButton = document.querySelector('.profile__place-add-button');
 let placeAddPopup = document.querySelector('#popupPlaceAdd');
 let placeAddPopupForm = placeAddPopup.querySelector('.popup__form');
-let placeAddInputName = placeAddPopupForm.querySelector('#name');
-let placeAddInputLink = placeAddPopupForm.querySelector('#image_link');
+let placeAddInputName = placeAddPopupForm.querySelector('#popupPlace-name');
+let placeAddInputLink = placeAddPopupForm.querySelector('#popupPlace-link');
 let placeAddPopupCloseButton = placeAddPopup.querySelector('.popup__close-button');
 let placeAddPopupSubmitButton = placeAddPopupForm.querySelector('.popup__save-button');
 
