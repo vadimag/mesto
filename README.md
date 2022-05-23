@@ -12,4 +12,4 @@
 * Оформление текстов
 
 Cсылка на gh-pages:
-https://vadimag.github.io/mesto/index.html
+https://vadimag.github.io/mesto
