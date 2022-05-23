@@ -1,53 +1,44 @@
-const initialCards = [
-  {
-    name: 'Архыз',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg'
-  },
-  {
-    name: 'Челябинская область',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg'
-  },
-  {
-    name: 'Иваново',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg'
-  },
-  {
-    name: 'Камчатка',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg'
-  },
-  {
-    name: 'Холмогорский район',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg'
-  },
-  {
-    name: 'Байкал',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg'
-  }
-];
+// объявление констант
+
+const elements = document.querySelector('.elements');
+const elementTemplate = document.querySelector('#elementTemplate').content;
+
+const profileName = document.querySelector('.profile__name');
+const profileActivity = document.querySelector('.profile__activity');
+const profileEditOpenButton = document.querySelector('.profile__edit-button');
+const profileEditPopup = document.querySelector('#popupProfileEdit');
+const profileEditPopupForm = profileEditPopup.querySelector('.popup__form');
+const profileEditNameInput = profileEditPopupForm.querySelector('#popupProfile-name');
+const profileEditActivityInput = profileEditPopupForm.querySelector('#popupProfile-activity');
+const profileEditSubmitButton = profileEditPopupForm.querySelector('.popup__save-button');
+const profileEditCloseButton = profileEditPopup.querySelector('.popup__close-button');
+
+const placeAddOpenButton = document.querySelector('.profile__place-add-button');
+const placeAddPopup = document.querySelector('#popupPlaceAdd');
+const placeAddPopupForm = placeAddPopup.querySelector('.popup__form');
+const placeAddInputName = placeAddPopupForm.querySelector('#popupPlace-name');
+const placeAddInputLink = placeAddPopupForm.querySelector('#popupPlace-link');
+const placeAddPopupCloseButton = placeAddPopup.querySelector('.popup__close-button');
+const placeAddPopupSubmitButton = placeAddPopupForm.querySelector('.popup__save-button');
+
+const placeViewPopup = document.querySelector('#popupPlaceView');
+const placeViewPopupCloseButton = placeViewPopup.querySelector('.popup__close-button');
 
 //инициализация галереи
 
-let elements = document.querySelector('.elements');
-const elementTemplate = document.querySelector('#elementTemplate').content;
-const popupPlaceView = document.querySelector('#popupPlaceView');
-
 function createElement(link, name) {
-  let newElement = elementTemplate.querySelector('.element').cloneNode(true);
-
-  let image = newElement.querySelector('.element__photo');
+  const newElement = elementTemplate.querySelector('.element').cloneNode(true);
+  const image = newElement.querySelector('.element__photo');
   image.src = link;
+  image.alt = name;
   image.addEventListener('click', openPopupPopupPlaceView);
-
-  newElement.querySelector('.element__photo').alt = name;
   newElement.querySelector('.element__footer-text').textContent = name;
 
-  let likeButton = newElement.querySelector('.element__like-button');
+  const likeButton = newElement.querySelector('.element__like-button');
   likeButton.addEventListener('click', () => likeButton.classList.toggle('element__like-button_active'));
 
-  let removeButton = newElement.querySelector('.element__remove-button');
-  removeButton.addEventListener('click', function removeCard(event) {
-    event.target.closest('.element').remove();
-  });
+  const removeCardButton = newElement.querySelector('.element__remove-button');
+  removeCardButton.addEventListener('click', removeCard);
 
   return newElement;
 }
@@ -58,11 +49,18 @@ function initElements() {
   })
 }
 
+initElements();
+
 // общие функции
 
 function openPopup(popup) {
   document.addEventListener('keydown', closePopupByEsc);
   popup.classList.add('popup_opened');
+}
+
+function closePopup(popup) {
+  document.removeEventListener('keydown', closePopupByEsc);
+  popup.classList.remove('popup_opened');
 }
 
 function closePopupByEsc(event){
@@ -72,22 +70,7 @@ function closePopupByEsc(event){
   }
 }
 
-function closePopup(popup) {
-  document.removeEventListener('keydown', closePopupByEsc);
-  popup.classList.remove('popup_opened');
-}
-
 //редактирование профиля
-
-let profileName = document.querySelector('.profile__name');
-let profileActivity = document.querySelector('.profile__activity');
-let profileEditOpenButton = document.querySelector('.profile__edit-button');
-let profileEditPopup = document.querySelector('#popupProfileEdit');
-let profileEditPopupForm = profileEditPopup.querySelector('.popup__form');
-let profileEditNameInput = profileEditPopupForm.querySelector('#popupProfile-name');
-let profileEditActivityInput = profileEditPopupForm.querySelector('#popupProfile-activity');
-let profileEditSubmitButton = profileEditPopupForm.querySelector('.popup__save-button');
-let profileEditCloseButton = profileEditPopup.querySelector('.popup__close-button');
 
 function openProfileEditPopup() {
   profileEditNameInput.value = profileName.textContent;
@@ -99,22 +82,15 @@ function submitProfileEditPopup(event) {
   event.preventDefault();
   profileName.textContent = profileEditNameInput.value;
   profileActivity.textContent = profileEditActivityInput.value;
-  profileEditPopup.classList.remove('popup_opened')
+  closePopup(profileEditPopup);
 }
 
-profileEditOpenButton.addEventListener('click', openProfileEditPopup);
-profileEditSubmitButton.addEventListener('click', (event) => submitProfileEditPopup(event));
-profileEditCloseButton.addEventListener('click', () => profileEditPopup.classList.remove('popup_opened'));
+function closeProfileEditPopup(event) {
+  event.preventDefault();
+  closePopup(profileEditPopup);
+}
 
 //добавление карточки в галерею
-
-let placeAddOpenButton = document.querySelector('.profile__place-add-button');
-let placeAddPopup = document.querySelector('#popupPlaceAdd');
-let placeAddPopupForm = placeAddPopup.querySelector('.popup__form');
-let placeAddInputName = placeAddPopupForm.querySelector('#popupPlace-name');
-let placeAddInputLink = placeAddPopupForm.querySelector('#popupPlace-link');
-let placeAddPopupCloseButton = placeAddPopup.querySelector('.popup__close-button');
-let placeAddPopupSubmitButton = placeAddPopupForm.querySelector('.popup__save-button');
 
 function openPopupPlaceAdd() {
   placeAddPopupForm.reset();
@@ -130,23 +106,15 @@ function submitPlaceAddPopup(event) {
   closePopup(placeAddPopup)
 }
 
-placeAddOpenButton.addEventListener('click', openPopupPlaceAdd);
-placeAddPopupSubmitButton.addEventListener('click', (event) => submitPlaceAddPopup(event));
-placeAddPopupCloseButton.addEventListener('click', closePopupPlaceAdd);
-
-//popup с картинкой
+//всплываюшая картинка
 
 function openPopupPopupPlaceView(event){
-  let photo = popupPlaceView.querySelector('.popup__photo');
-  let title = popupPlaceView.querySelector('.popup__photo-name');
-  let closeButton = popupPlaceView.querySelector('.popup__close-button');
-  let parentElement = event.target.closest('.element');
-
+  const photo = popupPlaceView.querySelector('.popup__photo');
+  const title = popupPlaceView.querySelector('.popup__photo-name');
+  const parentElement = event.target.closest('.element');
   photo.src = event.target.src;
   photo.alt = event.target.alt;
   title.textContent = parentElement.querySelector('.element__footer-text').textContent;
-
-  closeButton.addEventListener('click', closePopupPlaceView);
   openPopup(popupPlaceView);
 }
 
@@ -154,4 +122,18 @@ function closePopupPlaceView(){
   closePopup(popupPlaceView);
 }
 
-initElements();
+function removeCard(event) {
+  event.target.closest('.element').remove();
+}
+
+// добавление слушателей
+
+profileEditOpenButton.addEventListener('click', openProfileEditPopup);
+profileEditPopupForm.addEventListener('submit', submitProfileEditPopup);
+profileEditCloseButton.addEventListener('click', closeProfileEditPopup);
+
+placeAddOpenButton.addEventListener('click', openPopupPlaceAdd);
+placeAddPopupForm.addEventListener('submit', submitPlaceAddPopup);
+placeAddPopupCloseButton.addEventListener('click', closePopupPlaceAdd);
+
+placeViewPopupCloseButton.addEventListener('click', closePopupPlaceView);
