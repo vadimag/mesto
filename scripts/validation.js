@@ -1,3 +1,12 @@
+const VALIDATION_SETTINGS = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__save-button',
+  inactiveButtonClass: 'popup__save-button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__input-error_visible'
+}
+
 //отображение текста ошибки
 const showInputError = (formElement, inputElement, errorMessage, params) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
@@ -34,8 +43,10 @@ const hasInvalidInput = (inputList) => {
 function toggleButtonState(inputList, buttonElement, params){
   if (hasInvalidInput(inputList)){
     buttonElement.classList.add(params.inactiveButtonClass);
+    buttonElement.disabled = true;
   } else {
     buttonElement.classList.remove(params.inactiveButtonClass);
+    buttonElement.disabled = false;
   }
 }
 
@@ -64,11 +75,4 @@ const enableValidation = (params) => {
 };
 
 // включение валидации
-enableValidation({
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__save-button',
-  inactiveButtonClass: 'popup__save-button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__input-error_visible'
-});
+enableValidation(VALIDATION_SETTINGS);
