@@ -28,7 +28,7 @@ const initialCards = [
   }
 ];
 
-const VALIDATION_SETTINGS = {
+const FORM_VALIDATION_SETTINGS = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
   submitButtonSelector: '.popup__save-button',
@@ -63,12 +63,15 @@ const placeViewPopupPhoto = placeViewPopup.querySelector('.popup__photo');
 const placeViewPopupTitle = placeViewPopup.querySelector('.popup__photo-name');
 const placeViewPopupCloseButton = placeViewPopup.querySelector('.popup__close-button');
 
-
 // создание карточек
-initialCards.forEach((item) => {
-  const card = new Card(item, '#elementTemplate');
+function createCard(item) {
+  const card = new Card(item, '#elementTemplate', handleCardClick);
   const cardElement = card.generateCard();
-  elements.append(cardElement);
+  return cardElement;
+}
+
+initialCards.forEach((item) => {
+  elements.append(createCard(item));
 });
 
 
@@ -96,22 +99,9 @@ function openPopup(popup) {
   popup.classList.add('popup_opened');
 }
 
-function resetPopupForm(popup) {
-  const formElement = popup.querySelector('.popup__form');
-  formElement.reset();
-  const buttonElement = formElement.querySelector('.popup__save-button');
-  buttonElement.disabled = true;
-  buttonElement.classList.add('popup__save-button_disabled');
-  const fieldElements = Array.from(formElement.querySelectorAll('.popup__field'));
-  fieldElements.forEach(function (field) {
-    const errorElement = field.querySelector('.popup__input-error');
-    errorElement.textContent = '';
-  })
-}
-
 //редактирование профиля
 function handleOpenProfileEditPopup() {
-  resetPopupForm(profileEditPopup);
+  formValidators['popupFormProfile'].resetValidation();
   profileEditNameInput.value = profileName.textContent;
   profileEditActivityInput.value = profileActivity.textContent;
   openPopup(profileEditPopup);
@@ -124,14 +114,13 @@ function handleSubmitProfileEditPopup(event) {
   closePopup(profileEditPopup);
 }
 
-function handleCloseProfileEditPopup(event) {
-  event.preventDefault();
+function handleCloseProfileEditPopup() {
   closePopup(profileEditPopup);
 }
 
 //добавление карточки в галерею
 function handleOpenPopupPlaceAdd() {
-  resetPopupForm(placeAddPopup);
+  formValidators['popupFormPlace'].resetValidation();
   openPopup(placeAddPopup);
 }
 
@@ -142,8 +131,7 @@ function handleClosePopupPlaceAdd() {
 function handleSubmitPlaceAddPopup(event) {
   event.preventDefault();
   const cardData = { link: placeAddInputLink.value, name: placeAddInputName.value };
-  const card = new Card(cardData, '#elementTemplate');
-  elements.prepend(card.generateCard());
+  elements.prepend(createCard(cardData));
   closePopup(placeAddPopup)
 }
 
@@ -152,18 +140,15 @@ function handleCancelClose(event) {
 }
 
 //всплываюшая картинка
-export function handleOpenPopupPlaceView(link, name) {
+function handleCardClick(name, link) {
   placeViewPopupPhoto.src = link;
   placeViewPopupPhoto.alt = name;
   placeViewPopupTitle.textContent = name;
   openPopup(popupPlaceView);
 }
+
 function handleClosePopupPlaceView() {
   closePopup(popupPlaceView);
-}
-
-function handleRemoveCard(event) {
-  event.target.closest('.element').remove();
 }
 
 // добавление слушателей
@@ -180,9 +165,18 @@ placeAddPopupContainer.addEventListener('click', handleCancelClose)
 placeViewPopupContainer.addEventListener('click', handleCancelClose);
 placeViewPopupCloseButton.addEventListener('click', handleClosePopupPlaceView);
 
-// создание валидаторов форм
-const formList = Array.from(document.querySelectorAll(VALIDATION_SETTINGS.formSelector));
-formList.forEach((formElement) => {
-  const formValidator = new FormValidator(VALIDATION_SETTINGS, formElement);
-  formValidator.enableValidation();
-});
+const formValidators = {}
+
+// Включение валидации
+const enableValidation = (config) => {
+  const formList = Array.from(document.querySelectorAll(config.formSelector))
+  formList.forEach((formElement) => {
+    const validator = new FormValidator(config, formElement);
+    const formName = formElement.getAttribute('name');
+
+    formValidators[formName] = validator;
+   validator.enableValidation();
+  });
+};
+
+enableValidation(FORM_VALIDATION_SETTINGS);

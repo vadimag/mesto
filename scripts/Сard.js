@@ -1,11 +1,10 @@
-import { handleOpenPopupPlaceView } from './index.js';
 export class Card {
-  constructor(cardData, cardSelector) {
+  constructor(cardData, cardSelector, handleCardClick) {
     this._name = cardData.name;
     this._link = cardData.link;
     this._selector = cardSelector;
+    this._handleCardClick = handleCardClick;
   }
-
 
   _getTemplate() {
     const cardElement = document
@@ -17,21 +16,13 @@ export class Card {
     return cardElement;
   }
 
-
   _handleLikeAction() {
     this._element.likeButton.classList.toggle('element__like-button_active');
   }
 
-
   _handleRemoveCard() {
     this._element.removeButton.closest('.element').remove();
   }
-
-
-  _handleOpenPopupPlaceView() {
-    handleOpenPopupPlaceView(this._link, this._name);
-  }
-
 
   _setEventListeners() {
     this._element.likeButton.addEventListener('click', () => {
@@ -41,10 +32,9 @@ export class Card {
       this._handleRemoveCard();
     });
     this._element.photo.addEventListener('click', () => {
-      this._handleOpenPopupPlaceView()
+      this._handleCardClick(this._name, this._link)
     });
   }
-
 
   generateCard() {
     this._element = this._getTemplate();
@@ -55,7 +45,8 @@ export class Card {
     this._element.cardTitle = this._element.querySelector('.element__footer-text');
 
     this._setEventListeners();
-    this._element.photo.src = this._link
+    this._element.photo.src = this._link;
+    this._element.photo.alt = this._name;
     this._element.cardTitle.textContent = this._name;
 
     return this._element;

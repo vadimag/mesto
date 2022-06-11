@@ -5,57 +5,64 @@ export class FormValidator {
   }
 
   //отображение текста ошибки
-  _showInputError(formElement, inputElement, errorMessage, params) {
-    const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-    inputElement.classList.add(params.inputErrorClass);
+  _showInputError(inputElement, errorMessage) {
+    const errorElement = this._form.querySelector(`.${inputElement.id}-error`);
+    inputElement.classList.add(this._settings.inputErrorClass);
     errorElement.textContent = errorMessage;
-    errorElement.classList.add(params.errorClass);
+    errorElement.classList.add(this._settings.errorClass);
   };
 
   //скрытие текста ошибки
-  _hideInputError(formElement, inputElement, params) {
-    const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-    inputElement.classList.remove(params.inputErrorClass);
-    errorElement.classList.remove(params.errorClass);
+  _hideInputError(inputElement) {
+    const errorElement = this._form.querySelector(`.${inputElement.id}-error`);
+    inputElement.classList.remove(this._settings.inputErrorClass);
+    errorElement.classList.remove(this._settings.errorClass);
     errorElement.textContent = '';
   };
 
   //проверка валидности введенного в инпут значения
-  _checkInputValidity(formElement, inputElement, params) {
+  _checkInputValidity(inputElement) {
     if (!inputElement.validity.valid) {
-      this._showInputError(formElement, inputElement, inputElement.validationMessage, params);
+      this._showInputError(inputElement, inputElement.validationMessage);
     } else {
-      this._hideInputError(formElement, inputElement, params);
+      this._hideInputError(inputElement);
     }
   };
 
   //проверка валидности всех значений инпутов из списка
-  _hasInvalidInput(inputList) {
-    return inputList.some(function (inputElement) {
+  _hasInvalidInput() {
+    return this._inputList.some(function (inputElement) {
       return !inputElement.validity.valid;
     });
   }
 
   //включение/отключение кнопки сохранить
-  _toggleButtonState(inputList, buttonElement, params) {
-    if (this._hasInvalidInput(inputList)) {
-      buttonElement.classList.add(params.inactiveButtonClass);
-      buttonElement.disabled = true;
+  _toggleButtonState() {
+    if (this._hasInvalidInput()) {
+      this._submitButton.classList.add(this._settings.inactiveButtonClass);
+      this._submitButton.disabled = true;
     } else {
-      buttonElement.classList.remove(params.inactiveButtonClass);
-      buttonElement.disabled = false;
+      this._submitButton.classList.remove(this._settings.inactiveButtonClass);
+      this._submitButton.disabled = false;
     }
   }
 
+  // сброс ошибок
+  resetValidation(){
+    this._form.reset();
+    this._toggleButtonState();
+      this._inputList.forEach((inputElement) => {
+        this._hideInputError(inputElement)
+      });
+  }
+
   // установка слушателей на ввод в инпуты формы
-  _setEventListeners(formElement, params){
-    const inputList = Array.from(formElement.querySelectorAll(params.inputSelector));
-    const buttonElement = formElement.querySelector(params.submitButtonSelector);
-    this._toggleButtonState(inputList, buttonElement, params);
-    inputList.forEach((inputElement) => {
+  _setEventListeners(){
+    this._toggleButtonState();
+    this._inputList.forEach((inputElement) => {
       inputElement.addEventListener('input', () => {
-        this._checkInputValidity(formElement, inputElement, params);
-        this._toggleButtonState(inputList, buttonElement, params);
+        this._checkInputValidity(inputElement);
+        this._toggleButtonState();
       });
     });
   };
@@ -64,6 +71,8 @@ export class FormValidator {
     this._form.addEventListener('submit', function (evt) {
       evt.preventDefault();
     });
-    this._setEventListeners(this._form, this._settings);
+    this._inputList = Array.from(this._form.querySelectorAll(this._settings.inputSelector));
+    this._submitButton = this._form.querySelector(this._settings.submitButtonSelector);
+    this._setEventListeners();
   }
 }
