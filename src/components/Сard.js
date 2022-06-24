@@ -32,7 +32,7 @@ export class Card {
       this._handleRemoveCard();
     });
     this._element.photo.addEventListener('click', () => {
-      this._handleCardClick(this._name, this._link)
+      this._handleCardClick(this._name, this._link);
     });
   }
 
