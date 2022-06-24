@@ -17,7 +17,7 @@ module.exports = {
     port: 8080,
     open: true,
     devMiddleware: {
-      writeToDisk: true,
+      // writeToDisk: true,
     }
   },
   module: {
