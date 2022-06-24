@@ -21,7 +21,8 @@ export class Card {
   }
 
   _handleRemoveCard() {
-    this._element.removeButton.closest('.element').remove();
+    this._element.remove();
+    this._element = null;
   }
 
   _setEventListeners() {

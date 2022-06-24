@@ -5,7 +5,10 @@ export class UserInfo{
   };
 
   getUserInfo = () => {
-    return this;
+    return {
+      "profile-name": this._name.textContent,
+      "work": this._about.textContent
+    };
   }
 
   setUserInfo = (name, about) => {

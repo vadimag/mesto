@@ -1,3 +1,4 @@
+import { FORM_VALIDATION_SETTINGS } from '../utils/constants.js';
 import { cardListSelector, initialCards } from '../utils/constants.js';
 import './index.css';
 import { Card } from '../components/Сard.js';
@@ -5,15 +6,18 @@ import { Section } from '../components/Section.js';
 import { PopupWithImage } from '../components/PopupWithImage.js';
 import { PopupWithForm } from '../components/PopupWithForm.js';
 import { UserInfo } from '../components/UserInfo.js';
+import { FormValidator } from '../components/FormValidator.js';
 
 // создание карточек
-const cardList = new Section({
-  items: initialCards,
-  renderer: (item) => {
-    const card = new Card(item, '#elementTemplate', openPopupWithImage);
-    cardList.addItem(card.generateCard());
-  }
-}, cardListSelector);
+function createCard(data){
+  const card = new Card(data, '#elementTemplate', openPopupWithImage);
+  return card.generateCard();
+}
+
+const cardList = new Section(
+  (item) => {
+    cardList.addItem(createCard(item));
+  }, cardListSelector);
 
 // создание попапов
 const placeViewPopup = new PopupWithImage('#popupPlaceView');
@@ -24,8 +28,7 @@ const profileEditPopup = new PopupWithForm('#popupProfileEdit', (data) => {
 
 const placeAddPopup = new PopupWithForm('#popupPlaceAdd', data => {
   const {name, placeURL: link}  = data;
-  const card = new Card({name, link}, '#elementTemplate', openPopupWithImage);
-  cardList.addItem(card.generateCard());
+  cardList.addItem(createCard({name, link}));
 });
 
 // объект информации о пользователе
@@ -39,11 +42,38 @@ function openPopupWithImage(name, link) {
   placeViewPopup.open(name, link);
 }
 
+// Включение валидации
+const formValidators = {}
+
+const enableValidation = (config) => {
+  const formList = Array.from(document.querySelectorAll(config.formSelector))
+  formList.forEach((formElement) => {
+    const validator = new FormValidator(config, formElement);
+    const formName = formElement.getAttribute('name');
+    formValidators[formName] = validator;
+   validator.enableValidation();
+  });
+};
+
+const resetValidation = (formName) => {
+  formValidators[formName].resetValidation();
+}
+
 // добавление слушателей на кнопки
 const profileEditOpenButton = document.querySelector('.profile__edit-button');
 const placeAddOpenButton = document.querySelector('.profile__place-add-button');
 
-profileEditOpenButton.addEventListener('click', profileEditPopup.open);
-placeAddOpenButton.addEventListener('click', placeAddPopup.open);
+profileEditOpenButton.addEventListener('click', function(){
+  resetValidation(profileEditPopup.getFormName());
+  profileEditPopup.setFormValues(userInfo.getUserInfo());
+  profileEditPopup.open();
+});
+placeAddOpenButton.addEventListener('click', function(){
+  resetValidation(placeAddPopup.getFormName());
+  placeAddPopup.open();
+});
 
-cardList.renderItems();
+
+// start
+cardList.renderItems(initialCards);
+enableValidation(FORM_VALIDATION_SETTINGS);

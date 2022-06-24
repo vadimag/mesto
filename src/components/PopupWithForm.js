@@ -1,5 +1,3 @@
-import { FORM_VALIDATION_SETTINGS } from '../utils/constants.js';
-import { FormValidator } from './FormValidator.js';
 import { Popup } from './Popup.js';
 
 export class PopupWithForm extends Popup {
@@ -8,12 +6,21 @@ export class PopupWithForm extends Popup {
     this._popupContainer = this._popup.querySelector('.popup__container');
     this._handleSubmit = handleSubmit;
     this._form = this._popup.querySelector('.popup__form');
-    this._validator = new FormValidator(FORM_VALIDATION_SETTINGS, this._form);
   }
 
   _getInputValues = (e) => {
     // метод собирает данные всех полей формы
     this._inputsData = Object.fromEntries(new FormData(e.target));
+  }
+
+  setFormValues(data){
+    Object.keys(data).forEach( key => {
+      this._form.elements[key].value = data[key];
+    });
+  }
+
+  getFormName() {
+    return this._form.getAttribute('name');
   }
 
   _onSubmit = (e) => {
@@ -25,12 +32,11 @@ export class PopupWithForm extends Popup {
 
   setEventListeners = () => {
     this._form.addEventListener('submit', this._onSubmit);
-    this._validator.enableValidation();
     super.setEventListeners();
   }
 
   close = () => {
-    this._validator.resetValidation();
+    this._form.reset();
     super.close();
   }
 }
