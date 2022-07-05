@@ -8,7 +8,8 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'main.js',
-    publicPath: ''
+    publicPath: '',
+    clean: true, // очистка директории
   },
   mode: 'development',
   devServer: {
@@ -17,7 +18,7 @@ module.exports = {
     port: 8080,
     open: true,
     devMiddleware: {
-      // writeToDisk: true,
+      writeToDisk: true,
     }
   },
   module: {
@@ -60,5 +61,6 @@ module.exports = {
     }),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin()
-  ]
+  ],
+  // devtool: 'source-map',
 }

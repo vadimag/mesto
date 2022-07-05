@@ -18,6 +18,7 @@
 * ООП
 * Организация кода в модулях
 * Webpack
+* подключение к API
 
 Cсылка на gh-pages:
 https://vadimag.github.io/mesto

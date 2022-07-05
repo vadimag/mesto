@@ -9,6 +9,7 @@ export class Section{
   }
 
   renderItems(items){
+    this.clear();
     items.forEach((item) => {
       this._renderer(item);
     });
