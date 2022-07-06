@@ -8,18 +8,15 @@ export class PopupWithConfirmation extends Popup {
 
   _actionHandler() {
     this._data.deleteCardApi(this._data.cardId, this._data.removeCardElement);
-    this.close();
   }
-
-  close() {
-    this._confirmButton.removeEventListener('click', this._actionHandler);
-    super.close();
-  }
-
 
   setActionHandler(data) {
     this._data = data;
+  }
+
+  setEventListeners(){
     this._confirmButton.addEventListener('click', this._actionHandler.bind(this));
+    super.setEventListeners();
   }
 
 }

@@ -11,8 +11,14 @@ import { Api } from '../components/Api.js';
 import { API_CONFIG } from '../utils/constants.js';
 import { PopupWithConfirmation } from '../components/PopupWithConfirmation.js';
 
+// создание объектов
 let myApiId;
-let cardList;
+
+const cardList = new Section(
+  (item) => {
+    cardList.addItem(createCard(item));
+  }, cardListSelector);
+
 const api = new Api(API_CONFIG);
 
 // объект информации о пользователе
@@ -32,10 +38,7 @@ Promise.all([api.getUserInfo(), api.getCards()])
   .then(([userData, cards]) => {
     myApiId = userData._id;
     userInfo.setUserInfo(userData);
-    cardList = new Section(
-      (item) => {
-        cardList.addItem(createCard(item));
-      }, cardListSelector);
+    cardList.clear();
     cardList.renderItems(cards);
   })
   .catch((err) => {
@@ -51,10 +54,9 @@ function removeCardHandler(cardId, removeCardElement) {
 function deleteCardApi(cardId, removeCardElement) {
   api.deleteCard(cardId)
     .then((res) => {
-      if (res.message.toLowerCase() == "пост удалён") {
-        removeCardElement();
-        removeCardElement = null;
-      }
+      removeCardElement();
+      removeCardElement = null;
+      popupDeleteCardConfirm.close();
     })
     .catch((res) => {
       console.log(res);
@@ -64,7 +66,7 @@ function deleteCardApi(cardId, removeCardElement) {
 
 // добавление-удаление лайка
 function likeCardHandler(card) {
-  const isLiked = card._likes.some((user) => { return user._id == myApiId });
+  const isLiked = card.getLikes().some((user) => { return user._id == myApiId });
   if (!isLiked) {
     api.likeCard(card._cardId)
       .then((res) => {
@@ -91,35 +93,56 @@ function likeCardHandler(card) {
 
 // создание попапов
 const placeViewPopup = new PopupWithImage('#popupPlaceView');
+placeViewPopup.setEventListeners();
+
 const popupDeleteCardConfirm = new PopupWithConfirmation('#popupDeleteCardConfirm');
+popupDeleteCardConfirm.setEventListeners();
 
 const updateAvatarPopup = new PopupWithForm('#popupAvatarUpdate', (data) => {
   api.updateUserAvatar(data)
     .then(res => {
       userInfo.setUserInfo(res)
+      updateAvatarPopup.close();
     })
     .catch((err) => {
       console.log(err);
-    });
+    })
+    .finally(function(){
+      updateAvatarPopup.setButtonText('Сохранено');
+    })
 });
+updateAvatarPopup.setEventListeners();
 
 const profileEditPopup = new PopupWithForm('#popupProfileEdit', (data) => {
   api.updateUserInfo(data)
     .then(res => {
       userInfo.setUserInfo(res);
-    });
+      profileEditPopup.close();
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(function(){
+      profileEditPopup.setButtonText('Сохранено');
+    })
 });
+profileEditPopup.setEventListeners();
 
 const placeAddPopup = new PopupWithForm('#popupPlaceAdd', data => {
   const { name, placeURL: link } = data;
   api.addCard({ name, link })
     .then((cardData) => {
       cardList.addItem(createCard(cardData));
+      placeAddPopup.close();
     })
     .catch((err) => {
       console.log(err);
+    })
+    .finally(function(){
+      placeAddPopup.setButtonText('Сохранено');
     });
 });
+placeAddPopup.setEventListeners();
 
 
 // обработчик всплывающей картинки
@@ -128,7 +151,7 @@ function viewCardHandler(name, link) {
 }
 
 
-// Включение валидации
+// включение валидации
 const formValidators = {}
 
 const enableValidation = (config) => {

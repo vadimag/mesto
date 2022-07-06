@@ -49,7 +49,6 @@ export class FormValidator {
 
   // сброс ошибок
   resetValidation(){
-    this._form.reset();
     this._toggleButtonState();
       this._inputList.forEach((inputElement) => {
         this._hideInputError(inputElement)
@@ -68,9 +67,6 @@ export class FormValidator {
   };
 
   enableValidation() {
-    this._form.addEventListener('submit', function (evt) {
-      evt.preventDefault();
-    });
     this._inputList = Array.from(this._form.querySelectorAll(this._settings.inputSelector));
     this._submitButton = this._form.querySelector(this._settings.submitButtonSelector);
     this._setEventListeners();

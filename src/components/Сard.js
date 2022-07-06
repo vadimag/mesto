@@ -21,6 +21,10 @@ export class Card {
     return cardElement;
   }
 
+  getLikes(){
+    return this._likes;
+  }
+
   _handleRemoveCard() {
     this._element.remove();
     // this._element = null;

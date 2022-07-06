@@ -4,17 +4,19 @@ export class Api {
     this._headers = options.headers;
   }
 
+  _getResponseData(res) {
+    if (!res.ok) {
+      return Promise.reject(`Ошибка: ${res.status}`);
+    }
+    return res.json();
+  }
+
   getCards() {
     return fetch(`${this._baseUrl}/cards`, {
       method: 'GET',
       headers: this._headers,
     })
-      .then(res => {
-        if (res.ok){
-          return res.json();
-        }
-        return Promise.reject('Ошибка получения карточек')
-      })
+      .then(res => this._getResponseData(res))
   }
 
   getUserInfo() {
@@ -22,12 +24,7 @@ export class Api {
       method: 'GET',
       headers: this._headers,
     })
-      .then(res => {
-        if (res.ok){
-          return res.json();
-        }
-        return Promise.reject('Ошибка получения информации о пользователе')
-      })
+      .then(res => this._getResponseData(res))
   }
 
   updateUserInfo(data) {
@@ -37,12 +34,7 @@ export class Api {
       headers: this._headers,
       body,
     })
-      .then(res => {
-        if (res.ok){
-          return res.json();
-        }
-        return Promise.reject('Ошибка получения информации о пользователе')
-      })
+      .then(res => this._getResponseData(res))
   }
 
   updateUserAvatar(data) {
@@ -52,12 +44,7 @@ export class Api {
       headers: this._headers,
       body,
     })
-      .then(res => {
-        if (res.ok){
-          return res.json();
-        }
-        return Promise.reject('Ошибка при обновлении аватара пользователя')
-      })
+      .then(res => this._getResponseData(res))
   }
 
   addCard(data) {
@@ -67,12 +54,7 @@ export class Api {
       headers: this._headers,
       body,
     })
-      .then(res => {
-        if (res.ok){
-          return res.json();
-        }
-        return Promise.reject('Ошибка при добавлении новой карточки')
-      })
+      .then(res => this._getResponseData(res))
   }
 
   deleteCard(cardId) {
@@ -80,12 +62,7 @@ export class Api {
       method: 'DELETE',
       headers: this._headers,
     })
-      .then(res => {
-        if (res.ok){
-          return res.json();
-        }
-        return Promise.reject('Ошибка при удалении карточки')
-      })
+      .then(res => this._getResponseData(res))
   }
 
   likeCard(cardId) {
@@ -93,12 +70,7 @@ export class Api {
       method: 'PUT',
       headers: this._headers,
     })
-      .then(res => {
-        if (res.ok){
-          return res.json();
-        }
-        return Promise.reject('Ошибка при добавлении лайка')
-      })
+      .then(res => this._getResponseData(res))
   }
 
   dislikeCard(cardId) {
@@ -106,11 +78,6 @@ export class Api {
       method: 'DELETE',
       headers: this._headers,
     })
-      .then(res => {
-        if (res.ok){
-          return res.json();
-        }
-        return Promise.reject('Ошибка при удалении лайка')
-      })
+      .then(res => this._getResponseData(res))
   }
 }

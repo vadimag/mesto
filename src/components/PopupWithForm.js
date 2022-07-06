@@ -29,9 +29,7 @@ export class PopupWithForm extends Popup {
     e.preventDefault();
     this._getInputValues(e);
     this._handleSubmit(this._inputsData);
-    this._savebutton.textContent = 'Cохранение...';
-    this.close();
-
+    this.setButtonText('Сохранение...');
   }
 
   setEventListeners = () => {
@@ -39,9 +37,14 @@ export class PopupWithForm extends Popup {
     super.setEventListeners();
   }
 
-  open() {
-    this._savebutton.textContent = 'Cохранить';
+  setButtonText(text){
+    this._savebutton.textContent = text;
+  }
+
+  open(){
+    this.setButtonText('Сохранить');
     super.open();
+
   }
 
   close = () => {
