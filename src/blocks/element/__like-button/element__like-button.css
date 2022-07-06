@@ -3,7 +3,7 @@
   height: 19px;
   border: none;
   cursor: pointer;
-  background: url(../../../images/like-button.svg);
+  background: url(../../../images/like-button.svg) no-repeat;
   transition: 0.3s;
 }
 
