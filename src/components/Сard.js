@@ -21,8 +21,14 @@ export class Card {
     return cardElement;
   }
 
-  getLikes(){
+  getLikes() {
     return this._likes;
+  }
+
+  updateLikes(data) {
+    this._likes = data.likes;
+    this._element.likesCounter.textContent = this._likes.length;
+    this._element.likeButton.classList.toggle('element__like-button_active', data.isLike);
   }
 
   _handleRemoveCard() {
@@ -55,7 +61,7 @@ export class Card {
       this._element.removeButton.remove();
     }
 
-    const isLiked = this._likes.some((user) => {return user._id == myId });
+    const isLiked = this._likes.some((user) => { return user._id == myId });
     if (isLiked) {
       this._element.likeButton.classList.add('element__like-button_active');
     }

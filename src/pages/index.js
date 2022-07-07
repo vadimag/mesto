@@ -70,9 +70,7 @@ function likeCardHandler(card) {
   if (!isLiked) {
     api.likeCard(card._cardId)
       .then((res) => {
-        this._likes = res.likes;
-        this._element.likesCounter.textContent = this._likes.length;
-        this._element.likeButton.classList.add('element__like-button_active');
+        card.updateLikes({ likes: res.likes, isLike: !isLiked })
       })
       .catch((err) => {
         console.log(err);
@@ -80,9 +78,7 @@ function likeCardHandler(card) {
   } else {
     api.dislikeCard(card._cardId)
       .then((res) => {
-        this._likes = res.likes;
-        this._element.likesCounter.textContent = this._likes.length;
-        this._element.likeButton.classList.remove('element__like-button_active');
+        card.updateLikes({ likes: res.likes, isLike: !isLiked });
       })
       .catch((err) => {
         console.log(err);
@@ -107,8 +103,8 @@ const updateAvatarPopup = new PopupWithForm('#popupAvatarUpdate', (data) => {
     .catch((err) => {
       console.log(err);
     })
-    .finally(function(){
-      updateAvatarPopup.setButtonText('Сохранено');
+    .finally(function () {
+      updateAvatarPopup.setButtonText('Сохранить');
     })
 });
 updateAvatarPopup.setEventListeners();
@@ -122,8 +118,8 @@ const profileEditPopup = new PopupWithForm('#popupProfileEdit', (data) => {
     .catch((err) => {
       console.log(err);
     })
-    .finally(function(){
-      profileEditPopup.setButtonText('Сохранено');
+    .finally(function () {
+      profileEditPopup.setButtonText('Сохранить');
     })
 });
 profileEditPopup.setEventListeners();
@@ -138,8 +134,8 @@ const placeAddPopup = new PopupWithForm('#popupPlaceAdd', data => {
     .catch((err) => {
       console.log(err);
     })
-    .finally(function(){
-      placeAddPopup.setButtonText('Сохранено');
+    .finally(function () {
+      placeAddPopup.setButtonText('Сохранить');
     });
 });
 placeAddPopup.setEventListeners();

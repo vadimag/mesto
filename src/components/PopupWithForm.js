@@ -42,7 +42,6 @@ export class PopupWithForm extends Popup {
   }
 
   open(){
-    this.setButtonText('Сохранить');
     super.open();
 
   }
